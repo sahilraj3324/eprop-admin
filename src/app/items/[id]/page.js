@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
 import { 
   Package, 
   MapPin, 
@@ -29,13 +30,7 @@ export default function ItemViewPage() {
   const params = useParams();
   const itemId = params.id;
 
-  useEffect(() => {
-    if (itemId) {
-      fetchItem();
-    }
-  }, [itemId]);
-
-  const fetchItem = async () => {
+  const fetchItem = useCallback(async () => {
     try {
       setLoading(true);
       const response = await adminApi.get(`/items/${itemId}`);
@@ -46,7 +41,13 @@ export default function ItemViewPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [itemId]);
+
+  useEffect(() => {
+    if (itemId) {
+      fetchItem();
+    }
+  }, [itemId, fetchItem]);
 
   const handleDelete = async () => {
     if (!window.confirm(`Are you sure you want to delete item: ${item.title}?`)) {
@@ -209,9 +210,11 @@ export default function ItemViewPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {item.images.map((image, index) => (
                     <div key={index} className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                      <img
+                      <Image
                         src={image}
                         alt={`Item image ${index + 1}`}
+                        width={300}
+                        height={300}
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2YzZjRmNiIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzlDQTNBRiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBmb3VuZDwvdGV4dD4KICA8L3N2Zz4K';

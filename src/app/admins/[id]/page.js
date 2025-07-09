@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { 
   Shield, 
@@ -27,13 +27,7 @@ export default function AdminViewPage() {
   const params = useParams();
   const adminId = params.id;
 
-  useEffect(() => {
-    if (adminId) {
-      fetchAdmin();
-    }
-  }, [adminId]);
-
-  const fetchAdmin = async () => {
+  const fetchAdmin = useCallback(async () => {
     try {
       setLoading(true);
       const response = await adminApi.get(`/admin/${adminId}`);
@@ -44,7 +38,13 @@ export default function AdminViewPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [adminId]);
+
+  useEffect(() => {
+    if (adminId) {
+      fetchAdmin();
+    }
+  }, [adminId, fetchAdmin]);
 
   const handleDelete = async () => {
     if (!window.confirm(`Are you sure you want to delete admin: ${admin.name}?`)) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   Users, 
   Building, 
@@ -191,7 +192,7 @@ export default function Dashboard() {
           <div className="card">
             <h3 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
             <div className="space-y-3">
-              <a
+              <Link
                 href="/users"
                 className="block p-3 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
               >
@@ -199,8 +200,8 @@ export default function Dashboard() {
                   <Users className="h-5 w-5 text-blue-600" />
                   <span className="font-medium text-blue-900">Manage Users</span>
                 </div>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/properties"
                 className="block p-3 bg-green-50 hover:bg-green-100 rounded-lg transition-colors"
               >
@@ -208,8 +209,8 @@ export default function Dashboard() {
                   <Building className="h-5 w-5 text-green-600" />
                   <span className="font-medium text-green-900">View Properties</span>
                 </div>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/items"
                 className="block p-3 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
               >
@@ -217,8 +218,8 @@ export default function Dashboard() {
                   <Package className="h-5 w-5 text-purple-600" />
                   <span className="font-medium text-purple-900">Manage Items</span>
                 </div>
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/settings"
                 className="block p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
               >
@@ -226,7 +227,7 @@ export default function Dashboard() {
                   <Shield className="h-5 w-5 text-gray-600" />
                   <span className="font-medium text-gray-900">Admin Settings</span>
                 </div>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

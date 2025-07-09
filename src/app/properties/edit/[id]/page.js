@@ -1,21 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
 import { 
   Home, 
+  DollarSign, 
+  Tag, 
   MapPin, 
   Bed, 
   Bath, 
+  Ruler, 
   Save, 
   ArrowLeft,
   AlertCircle,
-  DollarSign,
-  Ruler,
-  Tag,
-  FileText,
   Plus,
-  X
+  X,
+  FileText
 } from 'lucide-react';
 import Layout from '@/components/Layout';
 import { adminApi } from '@/config/api';
@@ -44,13 +45,7 @@ export default function PropertyEditPage() {
   const params = useParams();
   const propertyId = params.id;
 
-  useEffect(() => {
-    if (propertyId) {
-      fetchProperty();
-    }
-  }, [propertyId]);
-
-  const fetchProperty = async () => {
+  const fetchProperty = useCallback(async () => {
     try {
       setLoading(true);
       const response = await adminApi.get(`/properties/${propertyId}`);
@@ -75,7 +70,13 @@ export default function PropertyEditPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [propertyId]);
+
+  useEffect(() => {
+    if (propertyId) {
+      fetchProperty();
+    }
+  }, [propertyId, fetchProperty]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -444,9 +445,11 @@ export default function PropertyEditPage() {
                   <div className="space-y-2">
                     {formData.images.map((image, index) => (
                       <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
-                        <img
+                        <Image
                           src={image}
                           alt={`Property image ${index + 1}`}
+                          width={64}
+                          height={64}
                           className="w-16 h-16 object-cover rounded"
                           onError={(e) => {
                             e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEg0NFY0NEgyMFYyMFoiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CjxjaXJjbGUgY3g9IjI4IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0ibTM1IDM1LTMtMy0zIDMtMy0zdjhIMDB2LTVsMyAzIDMtMyIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K';

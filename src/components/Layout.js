@@ -1,21 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Building, 
-  Package, 
-  Settings, 
-  LogOut, 
-  Menu, 
+import Link from 'next/link';
+import {
+  Menu,
   X,
-  Shield,
+  Search,
   Bell,
-  Search
+  LogOut,
+  LayoutDashboard,
+  Users,
+  Building,
+  Package,
+  Settings,
+  Shield
 } from 'lucide-react';
-import { adminApi, API_URLS } from '@/config/api';
+import { adminApi } from '@/config/api';
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -32,11 +33,7 @@ export default function Layout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
 
-  useEffect(() => {
-    fetchCurrentAdmin();
-  }, []);
-
-  const fetchCurrentAdmin = async () => {
+  const fetchCurrentAdmin = useCallback(async () => {
     try {
       const response = await adminApi.get('/admin/me');
       if (response.data.success) {
@@ -49,7 +46,11 @@ export default function Layout({ children }) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    fetchCurrentAdmin();
+  }, [fetchCurrentAdmin]);
 
   const handleLogout = async () => {
     try {
@@ -97,14 +98,14 @@ export default function Layout({ children }) {
               const Icon = item.icon;
               const isActive = pathname === item.href;
               return (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
                   className={`sidebar-link ${isActive ? 'active' : ''}`}
                 >
                   <Icon className="h-5 w-5" />
                   <span>{item.name}</span>
-                </a>
+                </Link>
               );
             })}
           </nav>
@@ -134,14 +135,14 @@ export default function Layout({ children }) {
               const Icon = item.icon;
               const isActive = pathname === item.href;
               return (
-                <a
+                <Link
                   key={item.name}
                   href={item.href}
                   className={`sidebar-link ${isActive ? 'active' : ''}`}
                 >
                   <Icon className="h-5 w-5" />
                   <span>{item.name}</span>
-                </a>
+                </Link>
               );
             })}
           </nav>

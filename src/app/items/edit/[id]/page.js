@@ -1,18 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
 import { 
   Package, 
-  MapPin, 
+  DollarSign, 
   Tag, 
+  MapPin, 
   Save, 
   ArrowLeft,
   AlertCircle,
-  DollarSign,
-  FileText,
   Plus,
-  X
+  X,
+  FileText
 } from 'lucide-react';
 import Layout from '@/components/Layout';
 import { adminApi } from '@/config/api';
@@ -41,13 +42,7 @@ export default function ItemEditPage() {
   const params = useParams();
   const itemId = params.id;
 
-  useEffect(() => {
-    if (itemId) {
-      fetchItem();
-    }
-  }, [itemId]);
-
-  const fetchItem = async () => {
+  const fetchItem = useCallback(async () => {
     try {
       setLoading(true);
       const response = await adminApi.get(`/items/${itemId}`);
@@ -72,7 +67,13 @@ export default function ItemEditPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [itemId]);
+
+  useEffect(() => {
+    if (itemId) {
+      fetchItem();
+    }
+  }, [itemId, fetchItem]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -416,9 +417,11 @@ export default function ItemEditPage() {
                   <div className="space-y-2">
                     {formData.images.map((image, index) => (
                       <div key={index} className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
-                        <img
+                        <Image
                           src={image}
                           alt={`Item image ${index + 1}`}
+                          width={64}
+                          height={64}
                           className="w-16 h-16 object-cover rounded"
                           onError={(e) => {
                             e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMCAyMEg0NFY0NEgyMFYyMFoiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CjxjaXJjbGUgY3g9IjI4IiBjeT0iMjgiIHI9IjMiIGZpbGw9IiM5Q0EzQUYiLz4KPHBhdGggZD0ibTM1IDM1LTMtMy0zIDMtMy0zdjhIMDB2LTVsMyAzIDMtMyIgZmlsbD0iIzlDQTNBRiIvPgo8L3N2Zz4K';

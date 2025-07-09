@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import Image from 'next/image';
 import { 
   User, 
   Phone, 
@@ -27,13 +28,7 @@ export default function UserViewPage() {
   const params = useParams();
   const userId = params.id;
 
-  useEffect(() => {
-    if (userId) {
-      fetchUser();
-    }
-  }, [userId]);
-
-  const fetchUser = async () => {
+  const fetchUser = useCallback(async () => {
     try {
       setLoading(true);
       const response = await adminApi.get(`/users/${userId}`);
@@ -44,7 +39,13 @@ export default function UserViewPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId]);
+
+  useEffect(() => {
+    if (userId) {
+      fetchUser();
+    }
+  }, [userId, fetchUser]);
 
   const handleDelete = async () => {
     if (!window.confirm(`Are you sure you want to delete user: ${user.name}?`)) {
@@ -181,9 +182,11 @@ export default function UserViewPage() {
                 <div className="text-center">
                   <div className="mx-auto w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mb-4">
                     {user.profilePic ? (
-                      <img
+                      <Image
                         src={user.profilePic}
                         alt={user.name}
+                        width={96}
+                        height={96}
                         className="w-24 h-24 rounded-full object-cover"
                       />
                     ) : (
