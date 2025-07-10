@@ -14,7 +14,8 @@ import {
   Building,
   Package,
   Settings,
-  Shield
+  Shield,
+  BookOpen
 } from 'lucide-react';
 import { adminApi } from '@/config/api';
 
@@ -23,6 +24,7 @@ const navigation = [
   { name: 'Users', href: '/users', icon: Users },
   { name: 'Properties', href: '/properties', icon: Building },
   { name: 'Items', href: '/items', icon: Package },
+  { name: 'Blogs', href: '/blogs', icon: BookOpen },
   { name: 'Settings', href: '/settings', icon: Settings },
 ];
 
